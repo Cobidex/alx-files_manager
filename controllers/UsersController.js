@@ -1,4 +1,5 @@
 import dbClient from '../utils/db';
+import userQueue from '../userWorker';
 import redisClient from '../utils/redis';
 import crypto from 'crypto';
 import { ObjectId } from 'mongodb';
@@ -31,7 +32,8 @@ class UsersController {
 
     try {
       const id = await dbClient.addUser(user);
-      res.status(201).send({'id': id, 'email': email});
+      await userQueue.add({ userId: id });
+      return res.status(201).send({'id': id, 'email': email});
     } catch (error) {
       console.log(error);
       res.status(500).send('failed to add user');
