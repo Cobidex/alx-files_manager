@@ -5,16 +5,16 @@ import redisClient from '../utils/redis';
 class AppController {
   static async getStatus(req, res) {
     const statusOb = {
-      'redis': redisClient.isAlive(),
-      'db': dbClient.isAlive(),
+      redis: redisClient.isAlive(),
+      db: dbClient.isAlive(),
     };
     res.send(statusOb);
   }
 
   static async getStats(req, res) {
     const stats = {
-      'users': await dbClient.nbUsers(),
-      'files': await dbClient.nbFiles(),
+      users: await dbClient.nbUsers(),
+      files: await dbClient.nbFiles(),
     };
     res.send(stats);
   }
