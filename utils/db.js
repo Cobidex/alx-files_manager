@@ -15,7 +15,7 @@ class DBClient {
       })
       .catch((error) => {
         console.error('Error connecting to MongoDB:', error);
-    });
+      });
   }
 
   isAlive() {
@@ -24,19 +24,17 @@ class DBClient {
 
   async nbUsers() {
     return this.db.collection('users').countDocuments()
-      .then(count => count)
-      .catch(error => {
+      .then((count) => count)
+      .catch((error) => {
         console.log(error);
-        return;
       });
-    }
+  }
 
   async nbFiles() {
     return this.db.collection('files').countDocuments()
-      .then(count => count)
-      .catch(error => {
+      .then((count) => count)
+      .catch((error) => {
         console.log(error);
-        return;
       });
   }
 
@@ -47,6 +45,7 @@ class DBClient {
       return result.insertedId;
     } catch (error) {
       console.log(`error inserting to user: ${error}`);
+      return null;
     }
   }
 
@@ -57,6 +56,7 @@ class DBClient {
       return exists;
     } catch (error) {
       console.log('could not search database');
+      return null;
     }
   }
 
@@ -67,6 +67,7 @@ class DBClient {
       return exists;
     } catch (error) {
       console.log('could not search database');
+      return null;
     }
   }
 
@@ -77,6 +78,7 @@ class DBClient {
       return result.insertedId;
     } catch (error) {
       console.log(`error inserting to files: ${error}`);
+      return null;
     }
   }
 
@@ -84,12 +86,12 @@ class DBClient {
     try {
       const files = this.db.collection('files');
       const options = { returnOriginal: false };
-      const update = { $set: update};
-      const result = await files.findOneAndUpdate(filter, update, options);
+      const updateVal = { $set: update };
+      const result = await files.findOneAndUpdate(filter, updateVal, options);
       return result.value;
     } catch (error) {
       console.log(`unable to update document ${error}`);
-      return;
+      return null;
     }
   }
 
@@ -98,18 +100,18 @@ class DBClient {
       const pipeline = [
         {
           $match: {
-            parentId: parId
-          }
+            parentId: parId,
+          },
         },
         { $skip: skipDocuments },
-        { $limit: pageSize }
+        { $limit: pageSize },
       ];
       const files = this.db.collection('files');
       const list = await files.aggregate(pipeline).toArray();
       return list;
     } catch (error) {
       console.log(`error paginating: ${error}`);
-      return;
+      return null;
     }
   }
 }
