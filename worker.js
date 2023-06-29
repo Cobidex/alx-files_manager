@@ -1,8 +1,12 @@
+import fs from 'fs';
+import promisify from 'util';
 import imageThumbnail from 'image-thumbnail';
 import path from 'path';
 import queue from 'bull';
+import dbClient from './utils/db';
 
 const fileQueue = queue('fileQueue');
+const writeFileAsync = promisify(fs.writeFile);
 
 fileQueue.process(async (job) => {
   const { userId, fileId } = job.data;
@@ -50,4 +54,3 @@ fileQueue.process(async (job) => {
 });
 
 export default fileQueue;
-

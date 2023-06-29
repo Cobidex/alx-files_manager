@@ -1,8 +1,7 @@
 import Queue from 'bull';
 import dbClient from './utils/db';
 
-const userQueue = new Queue('userQueue')
-
+const userQueue = new Queue('userQueue');
 
 userQueue.process(async (job) => {
   const { userId } = job.data;
