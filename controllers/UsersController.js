@@ -9,21 +9,21 @@ class UsersController {
     const { email, password } = req.body;
 
     if (!email) {
-      res.status(400).send({ Error: 'Missing email' });
+      return res.status(400).send({ error: 'Missing email' });
     }
 
     if (!password) {
-      res.status(400).send({ Error: 'Missing password' });
+      return res.status(400).send({ error: 'Missing password' });
     }
 
-    const hashedPwd = crypto.createHash('sha1').update(password).digest('hex');
+    const hashedPwd = await crypto.createHash('sha1').update(password.toString()).digest('hex');
     const user = {
       email,
       password: hashedPwd,
     };
     const exists = await dbClient.findUser({ email });
     if (exists) {
-      res.status(400).send({ Error: 'Already exist' });
+      res.status(400).send({ error: 'Already exist' });
       return null;
     }
 
@@ -33,7 +33,7 @@ class UsersController {
       return res.status(201).send({ id, email });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ Error: 'failed to add user' });
+      res.status(500).send({ error: 'failed to add user' });
       return null;
     }
   }
@@ -43,7 +43,7 @@ class UsersController {
     const key = `auth_${token}`;
     const id = await redisClient.get(key);
     if (!id) {
-      res.status(401).send({ Error: 'unauthorized' });
+      res.status(401).send({ error: 'unauthorized' });
       return null;
     }
     const user = await dbClient.findUser({ _id: ObjectId(id) });
