@@ -1,5 +1,5 @@
 import Queue from 'bull';
-import dbClient from '../utils/db';
+import dbClient from './utils/db';
 
 const userQueue = new Queue('userQueue')
 

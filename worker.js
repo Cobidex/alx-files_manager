@@ -1,6 +1,8 @@
 import imageThumbnail from 'image-thumbnail';
-
 import path from 'path';
+import queue from 'bull';
+
+const fileQueue = queue('fileQueue');
 
 fileQueue.process(async (job) => {
   const { userId, fileId } = job.data;
